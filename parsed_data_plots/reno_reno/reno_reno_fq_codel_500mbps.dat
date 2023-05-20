@@ -1,0 +1,7 @@
+#BDP,alg1_mean_throughput,alg2_mean_throughput,alg1_mean_retx_packets,alg2_mean_retx_packets,fairness_index
+0.5BDP,237.18,237.24,1804.6,3600.6,1.0
+1BDP,234.3,237.32,2237.6,2027.4,1.0
+2BDP,234.3,234.6,1895.2,1643.2,1.0
+4BDP,235.42,235.46,914.6,1334.4,1.0
+8BDP,234.56,231.24,1240.2,912.2,0.9999
+16BDP,236.72,239.88,878.8,1261.8,1.0

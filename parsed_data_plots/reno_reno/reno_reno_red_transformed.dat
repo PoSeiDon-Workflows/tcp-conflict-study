@@ -1,0 +1,6 @@
+#bws,alg1_mean_throughput_2BDP,alg2_mean_throughput_2BDP,alg1_mean_retx_packets_2BDP,alg2_mean_retx_packets_2BDP,fairness_2BDP,alg1_mean_throughput_16BDP,alg2_mean_throughput_16BDP,alg1_mean_retx_packets_16BDP,alg2_mean_retx_packets_16BDP,fairness_16BDP
+100mbps,50.58,50.08,2861.0,2525.8,1.0,49.26,51.42,1985.0,3098.0,0.9995
+500mbps,234.88,244.0,6982.0,9775.2,0.9996,237.86,240.8,8108.2,8698.6,1.0
+1gbps,450.1,441.32,13294.0,11661.8,0.9999,441.84,450.02,11736.0,13334.0,0.9999
+10gbps,3609.8,3633.4,30136.4,26280.0,1.0,3591.0,3603.8,27442.0,28149.6,1.0
+25gbps,4732.6,4792.8,104068.6,102163.6,1.0,4765.2,4795.2,103334.0,101779.2,1.0
