@@ -347,7 +347,7 @@ gnuplot<<EOC
          "parsed_data_plots/cubic_cubic/cubic_cubic_${aqm}_transformed.dat" using (\$10+\$11):xtic(1) title "CUBIC" with linespoints lw 5 pt 9
 EOC
 
-filename="parsed_data_plots/fairness_2bdp_16bdp_${aqm}_lines.pdf"
+filename="parsed_data_plots/fairness_2bdp_16bdp_homogeneous_${aqm}_lines.pdf"
 echo $filename
 gnuplot<<EOC
     reset
@@ -392,3 +392,80 @@ done
 #clean plots
 #for i in $(find . -name *.pdf); do rm -f $i; done
 
+#### EXTRA MULTIPLOTS ####
+
+folders_of_interest=("bbr_cubic" "bbr2_cubic" "reno_cubic" "htcp_cubic")
+for i in ${folders_of_interest[@]}; do
+if [[ -d parsed_data_plots/$i ]]; then
+
+echo "$i - ${i%_*} - ${i#*_}"
+alg1=${i%_*}
+alg2=${i#*_}
+
+cd ${cwd}/parsed_data_plots/${i}
+    
+for aqm in ${aqms[@]}; do
+
+echo "#bws,#bw_num,alg1_mean_throughput_2BDP,alg2_mean_throughput_2BDP,alg1_mean_retx_packets_2BDP,alg2_mean_retx_packets_2BDP,fairness_2BDP,alg1_mean_throughput_16BDP,alg2_mean_throughput_16BDP,alg1_mean_retx_packets_16BDP,alg2_mean_retx_packets_16BDP,fairness_16BDP" > "${alg1}_${alg2}_${aqm}_transformed.dat"
+for bw in ${bws[@]}; do
+  if [[ ${bw} == *"mbps"* ]]; then
+    bw_num=${bw%mbps*}
+  else
+    bw_num=$((${bw%gbps*}*1000))
+  fi
+  echo "${bw},${bw_num},$(grep '2BDP' ${alg1}_${alg2}_${aqm}_${bw}*.dat | cut -d',' -f 2,3,4,5,6),$(grep '16BDP' ${alg1}_${alg2}_${aqm}_${bw}*.dat | cut -d',' -f 2,3,4,5,6)" >> "${alg1}_${alg2}_${aqm}_transformed.dat"
+done
+
+for j in {1..10}; do
+  sed -i 's/,0\.0,/,0\.0001,/g' "${alg1}_${alg2}_${aqm}_transformed.dat"
+done
+
+done
+cd ${cwd}
+fi
+done
+
+for aqm in ${aqms[@]}; do
+
+filename="parsed_data_plots/fairness_2bdp_16bdp_${aqm}_lines.pdf"
+echo $filename
+gnuplot<<EOC
+    reset
+    set terminal pdf size 10,12 font "Calibri, 26"
+    set output "$filename"
+    set datafile separator ","
+
+    set multiplot layout 2,1 columns
+    
+    set notitle
+    
+    set ylabel "2BDP - Fairness Index vs CUBIC"
+    set yrange [0:]
+    unset xlabel
+    set key above vertical maxrows 1 right font "Calibri, 22"
+    
+    plot "parsed_data_plots/bbr_cubic/bbr_cubic_${aqm}_transformed.dat" using 7:xtic(1) title "BBRv1" with linespoints lw 5 pt 1,\
+         "parsed_data_plots/bbr2_cubic/bbr2_cubic_${aqm}_transformed.dat" using 7:xtic(1) title "BBRv2" with linespoints lw 5 pt 3,\
+         "parsed_data_plots/reno_cubic/reno_cubic_${aqm}_transformed.dat" using 7:xtic(1) title "RENO" with linespoints lw 5 pt 5,\
+         "parsed_data_plots/htcp_cubic/htcp_cubic_${aqm}_transformed.dat" using 7:xtic(1) title "HTCP" with linespoints lw 5 pt 7
+
+    set ylabel "16BDP - Fairness Index vs CUBIC"
+    set xlabel "Bandwidth"
+    unset key
+    
+    plot "parsed_data_plots/bbr_cubic/bbr_cubic_${aqm}_transformed.dat" using 12:xtic(1) title "BBRv1" with linespoints lw 5 pt 1,\
+         "parsed_data_plots/bbr2_cubic/bbr2_cubic_${aqm}_transformed.dat" using 12:xtic(1) title "BBRv2" with linespoints lw 5 pt 3,\
+         "parsed_data_plots/reno_cubic/reno_cubic_${aqm}_transformed.dat" using 12:xtic(1) title "RENO" with linespoints lw 5 pt 5,\
+         "parsed_data_plots/htcp_cubic/htcp_cubic_${aqm}_transformed.dat" using 12:xtic(1) title "HTCP" with linespoints lw 5 pt 7
+EOC
+
+done
+
+#clean transformed data
+#for i in $(find . -name *transformed.dat); do rm -f $i; done
+
+#clean parsed data
+#for i in $(find . -name *.dat); do rm -f $i; done
+
+#clean plots
+#for i in $(find . -name *.pdf); do rm -f $i; done
