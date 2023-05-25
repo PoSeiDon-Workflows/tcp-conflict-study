@@ -294,7 +294,7 @@ gnuplot<<EOC
     #set logscale y
     unset xlabel
     set key above vertical maxrows 1 right font "Calibri, 22"
-    set yrange [0:]
+    set yrange [0:1.1]
     
     plot "parsed_data_plots/bbr_bbr/bbr_bbr_${aqm}_transformed.dat" using ((\$3+\$4)/\$2):xtic(1) title "BBRv1" with linespoints lw 5 pt 1,\
          "parsed_data_plots/bbr2_bbr2/bbr2_bbr2_${aqm}_transformed.dat" using ((\$3+\$4)/\$2):xtic(1) title "BBRv2" with linespoints lw 5 pt 3,\
