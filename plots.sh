@@ -223,9 +223,14 @@ cd ${cwd}/parsed_data_plots/${i}
     
 for aqm in ${aqms[@]}; do
 
-echo "#bws,alg1_mean_throughput_2BDP,alg2_mean_throughput_2BDP,alg1_mean_retx_packets_2BDP,alg2_mean_retx_packets_2BDP,fairness_2BDP,alg1_mean_throughput_16BDP,alg2_mean_throughput_16BDP,alg1_mean_retx_packets_16BDP,alg2_mean_retx_packets_16BDP,fairness_16BDP" > "${alg1}_${alg2}_${aqm}_transformed.dat"
+echo "#bws,#bw_num,alg1_mean_throughput_2BDP,alg2_mean_throughput_2BDP,alg1_mean_retx_packets_2BDP,alg2_mean_retx_packets_2BDP,fairness_2BDP,alg1_mean_throughput_16BDP,alg2_mean_throughput_16BDP,alg1_mean_retx_packets_16BDP,alg2_mean_retx_packets_16BDP,fairness_16BDP" > "${alg1}_${alg2}_${aqm}_transformed.dat"
 for bw in ${bws[@]}; do
-  echo "${bw},$(grep '2BDP' ${alg1}_${alg2}_${aqm}_${bw}*.dat | cut -d',' -f 2,3,4,5,6),$(grep '16BDP' ${alg1}_${alg2}_${aqm}_${bw}*.dat | cut -d',' -f 2,3,4,5,6)" >> "${alg1}_${alg2}_${aqm}_transformed.dat"
+  if [[ ${bw} == *"mbps"* ]]; then
+    bw_num=${bw%mbps*}
+  else
+    bw_num=$((${bw%gbps*}*1000))
+  fi
+  echo "${bw},${bw_num},$(grep '2BDP' ${alg1}_${alg2}_${aqm}_${bw}*.dat | cut -d',' -f 2,3,4,5,6),$(grep '16BDP' ${alg1}_${alg2}_${aqm}_${bw}*.dat | cut -d',' -f 2,3,4,5,6)" >> "${alg1}_${alg2}_${aqm}_transformed.dat"
 done
 
 for j in {1..10}; do
@@ -256,21 +261,21 @@ gnuplot<<EOC
     unset xlabel
     set key above vertical maxrows 1 right font "Calibri, 22"
     
-    plot "parsed_data_plots/bbr_bbr/bbr_bbr_${aqm}_transformed.dat" using (\$2+\$3):xtic(1) title "BBRv1" with linespoints lw 5 pt 1,\
-         "parsed_data_plots/bbr2_bbr2/bbr2_bbr2_${aqm}_transformed.dat" using (\$2+\$3):xtic(1) title "BBRv2" with linespoints lw 5 pt 3,\
-         "parsed_data_plots/reno_reno/reno_reno_${aqm}_transformed.dat" using (\$2+\$3):xtic(1) title "RENO" with linespoints lw 5 pt 5,\
-         "parsed_data_plots/htcp_htcp/htcp_htcp_${aqm}_transformed.dat" using (\$2+\$3):xtic(1) title "HTCP" with linespoints lw 5 pt 7,\
-         "parsed_data_plots/cubic_cubic/cubic_cubic_${aqm}_transformed.dat" using (\$2+\$3):xtic(1) title "CUBIC" with linespoints lw 5 pt 9
+    plot "parsed_data_plots/bbr_bbr/bbr_bbr_${aqm}_transformed.dat" using (\$3+\$4):xtic(1) title "BBRv1" with linespoints lw 5 pt 1,\
+         "parsed_data_plots/bbr2_bbr2/bbr2_bbr2_${aqm}_transformed.dat" using (\$3+\$4):xtic(1) title "BBRv2" with linespoints lw 5 pt 3,\
+         "parsed_data_plots/reno_reno/reno_reno_${aqm}_transformed.dat" using (\$3+\$4):xtic(1) title "RENO" with linespoints lw 5 pt 5,\
+         "parsed_data_plots/htcp_htcp/htcp_htcp_${aqm}_transformed.dat" using (\$3+\$4):xtic(1) title "HTCP" with linespoints lw 5 pt 7,\
+         "parsed_data_plots/cubic_cubic/cubic_cubic_${aqm}_transformed.dat" using (\$3+\$4):xtic(1) title "CUBIC" with linespoints lw 5 pt 9
 
     set ylabel "16BDP - Throughput Mbps"
     set xlabel "Bandwidth"
     unset key
     
-    plot "parsed_data_plots/bbr_bbr/bbr_bbr_${aqm}_transformed.dat" using (\$7+\$8):xtic(1) title "BBRv1" with linespoints lw 5 pt 1,\
-         "parsed_data_plots/bbr2_bbr2/bbr2_bbr2_${aqm}_transformed.dat" using (\$7+\$8):xtic(1) title "BBRv2" with linespoints lw 5 pt 3,\
-         "parsed_data_plots/reno_reno/reno_reno_${aqm}_transformed.dat" using (\$7+\$8):xtic(1) title "RENO" with linespoints lw 5 pt 5,\
-         "parsed_data_plots/htcp_htcp/htcp_htcp_${aqm}_transformed.dat" using (\$7+\$8):xtic(1) title "HTCP" with linespoints lw 5 pt 7,\
-         "parsed_data_plots/cubic_cubic/cubic_cubic_${aqm}_transformed.dat" using (\$7+\$8):xtic(1) title "CUBIC" with linespoints lw 5 pt 9
+    plot "parsed_data_plots/bbr_bbr/bbr_bbr_${aqm}_transformed.dat" using (\$8+\$9):xtic(1) title "BBRv1" with linespoints lw 5 pt 1,\
+         "parsed_data_plots/bbr2_bbr2/bbr2_bbr2_${aqm}_transformed.dat" using (\$8+\$9):xtic(1) title "BBRv2" with linespoints lw 5 pt 3,\
+         "parsed_data_plots/reno_reno/reno_reno_${aqm}_transformed.dat" using (\$8+\$9):xtic(1) title "RENO" with linespoints lw 5 pt 5,\
+         "parsed_data_plots/htcp_htcp/htcp_htcp_${aqm}_transformed.dat" using (\$8+\$9):xtic(1) title "HTCP" with linespoints lw 5 pt 7,\
+         "parsed_data_plots/cubic_cubic/cubic_cubic_${aqm}_transformed.dat" using (\$8+\$9):xtic(1) title "CUBIC" with linespoints lw 5 pt 9
 EOC
 
 filename="parsed_data_plots/throughput_2bdp_16bdp_${aqm}_lines_normalized.pdf"
@@ -290,21 +295,21 @@ gnuplot<<EOC
     unset xlabel
     set key above vertical maxrows 1 right font "Calibri, 22"
     
-    plot "parsed_data_plots/bbr_bbr/bbr_bbr_${aqm}_transformed.dat" using ((\$2+\$3)/100):xtic(1) title "BBRv1" with linespoints lw 5 pt 1,\
-         "parsed_data_plots/bbr2_bbr2/bbr2_bbr2_${aqm}_transformed.dat" using ((\$2+\$3)/500):xtic(1) title "BBRv2" with linespoints lw 5 pt 3,\
-         "parsed_data_plots/reno_reno/reno_reno_${aqm}_transformed.dat" using ((\$2+\$3)/1000):xtic(1) title "RENO" with linespoints lw 5 pt 5,\
-         "parsed_data_plots/htcp_htcp/htcp_htcp_${aqm}_transformed.dat" using ((\$2+\$3)/10000):xtic(1) title "HTCP" with linespoints lw 5 pt 7,\
-         "parsed_data_plots/cubic_cubic/cubic_cubic_${aqm}_transformed.dat" using ((\$2+\$3)/25000):xtic(1) title "CUBIC" with linespoints lw 5 pt 9
+    plot "parsed_data_plots/bbr_bbr/bbr_bbr_${aqm}_transformed.dat" using ((\$3+\$4)/\$2):xtic(1) title "BBRv1" with linespoints lw 5 pt 1,\
+         "parsed_data_plots/bbr2_bbr2/bbr2_bbr2_${aqm}_transformed.dat" using ((\$3+\$4)/\$2):xtic(1) title "BBRv2" with linespoints lw 5 pt 3,\
+         "parsed_data_plots/reno_reno/reno_reno_${aqm}_transformed.dat" using ((\$3+\$4)/\$2):xtic(1) title "RENO" with linespoints lw 5 pt 5,\
+         "parsed_data_plots/htcp_htcp/htcp_htcp_${aqm}_transformed.dat" using ((\$3+\$4)/\$2):xtic(1) title "HTCP" with linespoints lw 5 pt 7,\
+         "parsed_data_plots/cubic_cubic/cubic_cubic_${aqm}_transformed.dat" using ((\$3+\$4)/\$2):xtic(1) title "CUBIC" with linespoints lw 5 pt 9
 
     set ylabel "16BDP - Normalized Throughput"
     set xlabel "Bandwidth"
     unset key
     
-    plot "parsed_data_plots/bbr_bbr/bbr_bbr_${aqm}_transformed.dat" using ((\$7+\$8)/100):xtic(1) title "BBRv1" with linespoints lw 5 pt 1,\
-         "parsed_data_plots/bbr2_bbr2/bbr2_bbr2_${aqm}_transformed.dat" using ((\$7+\$8)/500):xtic(1) title "BBRv2" with linespoints lw 5 pt 3,\
-         "parsed_data_plots/reno_reno/reno_reno_${aqm}_transformed.dat" using ((\$7+\$8)/1000):xtic(1) title "RENO" with linespoints lw 5 pt 5,\
-         "parsed_data_plots/htcp_htcp/htcp_htcp_${aqm}_transformed.dat" using ((\$7+\$8)/10000):xtic(1) title "HTCP" with linespoints lw 5 pt 7,\
-         "parsed_data_plots/cubic_cubic/cubic_cubic_${aqm}_transformed.dat" using ((\$7+\$8)/25000):xtic(1) title "CUBIC" with linespoints lw 5 pt 9
+    plot "parsed_data_plots/bbr_bbr/bbr_bbr_${aqm}_transformed.dat" using ((\$8+\$9)/\$2):xtic(1) title "BBRv1" with linespoints lw 5 pt 1,\
+         "parsed_data_plots/bbr2_bbr2/bbr2_bbr2_${aqm}_transformed.dat" using ((\$8+\$9)/\$2):xtic(1) title "BBRv2" with linespoints lw 5 pt 3,\
+         "parsed_data_plots/reno_reno/reno_reno_${aqm}_transformed.dat" using ((\$8+\$9)/\$2):xtic(1) title "RENO" with linespoints lw 5 pt 5,\
+         "parsed_data_plots/htcp_htcp/htcp_htcp_${aqm}_transformed.dat" using ((\$8+\$9)/\$2):xtic(1) title "HTCP" with linespoints lw 5 pt 7,\
+         "parsed_data_plots/cubic_cubic/cubic_cubic_${aqm}_transformed.dat" using ((\$8+\$9)/\$2):xtic(1) title "CUBIC" with linespoints lw 5 pt 9
 EOC
 
 filename="parsed_data_plots/retx_2bdp_16bdp_${aqm}_lines.pdf"
@@ -324,21 +329,21 @@ gnuplot<<EOC
     unset xlabel
     set key above vertical maxrows 1 right font "Calibri, 22"
     
-    plot "parsed_data_plots/bbr_bbr/bbr_bbr_${aqm}_transformed.dat" using (\$4+\$5):xtic(1) title "BBRv1" with linespoints lw 5 pt 1,\
-         "parsed_data_plots/bbr2_bbr2/bbr2_bbr2_${aqm}_transformed.dat" using (\$4+\$5):xtic(1) title "BBRv2" with linespoints lw 5 pt 3,\
-         "parsed_data_plots/reno_reno/reno_reno_${aqm}_transformed.dat" using (\$4+\$5):xtic(1) title "RENO" with linespoints lw 5 pt 5,\
-         "parsed_data_plots/htcp_htcp/htcp_htcp_${aqm}_transformed.dat" using (\$4+\$5):xtic(1) title "HTCP" with linespoints lw 5 pt 7,\
-         "parsed_data_plots/cubic_cubic/cubic_cubic_${aqm}_transformed.dat" using (\$4+\$5):xtic(1) title "CUBIC" with linespoints lw 5 pt 9
+    plot "parsed_data_plots/bbr_bbr/bbr_bbr_${aqm}_transformed.dat" using (\$5+\$6):xtic(1) title "BBRv1" with linespoints lw 5 pt 1,\
+         "parsed_data_plots/bbr2_bbr2/bbr2_bbr2_${aqm}_transformed.dat" using (\$5+\$6):xtic(1) title "BBRv2" with linespoints lw 5 pt 3,\
+         "parsed_data_plots/reno_reno/reno_reno_${aqm}_transformed.dat" using (\$5+\$6):xtic(1) title "RENO" with linespoints lw 5 pt 5,\
+         "parsed_data_plots/htcp_htcp/htcp_htcp_${aqm}_transformed.dat" using (\$5+\$6):xtic(1) title "HTCP" with linespoints lw 5 pt 7,\
+         "parsed_data_plots/cubic_cubic/cubic_cubic_${aqm}_transformed.dat" using (\$5+\$6):xtic(1) title "CUBIC" with linespoints lw 5 pt 9
 
     set ylabel "16BDP - reTX Packets (log)"
     set xlabel "Bandwidth"
     unset key
     
-    plot "parsed_data_plots/bbr_bbr/bbr_bbr_${aqm}_transformed.dat" using (\$9+\$10):xtic(1) title "BBRv1" with linespoints lw 5 pt 1,\
-         "parsed_data_plots/bbr2_bbr2/bbr2_bbr2_${aqm}_transformed.dat" using (\$9+\$10):xtic(1) title "BBRv2" with linespoints lw 5 pt 3,\
-         "parsed_data_plots/reno_reno/reno_reno_${aqm}_transformed.dat" using (\$9+\$10):xtic(1) title "RENO" with linespoints lw 5 pt 5,\
-         "parsed_data_plots/htcp_htcp/htcp_htcp_${aqm}_transformed.dat" using (\$9+\$10):xtic(1) title "HTCP" with linespoints lw 5 pt 7,\
-         "parsed_data_plots/cubic_cubic/cubic_cubic_${aqm}_transformed.dat" using (\$9+\$10):xtic(1) title "CUBIC" with linespoints lw 5 pt 9
+    plot "parsed_data_plots/bbr_bbr/bbr_bbr_${aqm}_transformed.dat" using (\$10+\$11):xtic(1) title "BBRv1" with linespoints lw 5 pt 1,\
+         "parsed_data_plots/bbr2_bbr2/bbr2_bbr2_${aqm}_transformed.dat" using (\$10+\$11):xtic(1) title "BBRv2" with linespoints lw 5 pt 3,\
+         "parsed_data_plots/reno_reno/reno_reno_${aqm}_transformed.dat" using (\$10+\$11):xtic(1) title "RENO" with linespoints lw 5 pt 5,\
+         "parsed_data_plots/htcp_htcp/htcp_htcp_${aqm}_transformed.dat" using (\$10+\$11):xtic(1) title "HTCP" with linespoints lw 5 pt 7,\
+         "parsed_data_plots/cubic_cubic/cubic_cubic_${aqm}_transformed.dat" using (\$10+\$11):xtic(1) title "CUBIC" with linespoints lw 5 pt 9
 EOC
 
 filename="parsed_data_plots/fairness_2bdp_16bdp_${aqm}_lines.pdf"
@@ -358,21 +363,21 @@ gnuplot<<EOC
     unset xlabel
     set key above vertical maxrows 1 right font "Calibri, 22"
     
-    plot "parsed_data_plots/bbr_bbr/bbr_bbr_${aqm}_transformed.dat" using 6:xtic(1) title "BBRv1" with linespoints lw 5 pt 1,\
-         "parsed_data_plots/bbr2_bbr2/bbr2_bbr2_${aqm}_transformed.dat" using 6:xtic(1) title "BBRv2" with linespoints lw 5 pt 3,\
-         "parsed_data_plots/reno_reno/reno_reno_${aqm}_transformed.dat" using 6:xtic(1) title "RENO" with linespoints lw 5 pt 5,\
-         "parsed_data_plots/htcp_htcp/htcp_htcp_${aqm}_transformed.dat" using 6:xtic(1) title "HTCP" with linespoints lw 5 pt 7,\
-         "parsed_data_plots/cubic_cubic/cubic_cubic_${aqm}_transformed.dat" using 6:xtic(1) title "CUBIC" with linespoints lw 5 pt 9
+    plot "parsed_data_plots/bbr_bbr/bbr_bbr_${aqm}_transformed.dat" using 7:xtic(1) title "BBRv1" with linespoints lw 5 pt 1,\
+         "parsed_data_plots/bbr2_bbr2/bbr2_bbr2_${aqm}_transformed.dat" using 7:xtic(1) title "BBRv2" with linespoints lw 5 pt 3,\
+         "parsed_data_plots/reno_reno/reno_reno_${aqm}_transformed.dat" using 7:xtic(1) title "RENO" with linespoints lw 5 pt 5,\
+         "parsed_data_plots/htcp_htcp/htcp_htcp_${aqm}_transformed.dat" using 7:xtic(1) title "HTCP" with linespoints lw 5 pt 7,\
+         "parsed_data_plots/cubic_cubic/cubic_cubic_${aqm}_transformed.dat" using 7:xtic(1) title "CUBIC" with linespoints lw 5 pt 9
 
     set ylabel "16BDP - Fairness Index"
     set xlabel "Bandwidth"
     unset key
     
-    plot "parsed_data_plots/bbr_bbr/bbr_bbr_${aqm}_transformed.dat" using 11:xtic(1) title "BBRv1" with linespoints lw 5 pt 1,\
-         "parsed_data_plots/bbr2_bbr2/bbr2_bbr2_${aqm}_transformed.dat" using 11:xtic(1) title "BBRv2" with linespoints lw 5 pt 3,\
-         "parsed_data_plots/reno_reno/reno_reno_${aqm}_transformed.dat" using 11:xtic(1) title "RENO" with linespoints lw 5 pt 5,\
-         "parsed_data_plots/htcp_htcp/htcp_htcp_${aqm}_transformed.dat" using 11:xtic(1) title "HTCP" with linespoints lw 5 pt 7,\
-         "parsed_data_plots/cubic_cubic/cubic_cubic_${aqm}_transformed.dat" using 11:xtic(1) title "CUBIC" with linespoints lw 5 pt 9
+    plot "parsed_data_plots/bbr_bbr/bbr_bbr_${aqm}_transformed.dat" using 12:xtic(1) title "BBRv1" with linespoints lw 5 pt 1,\
+         "parsed_data_plots/bbr2_bbr2/bbr2_bbr2_${aqm}_transformed.dat" using 12:xtic(1) title "BBRv2" with linespoints lw 5 pt 3,\
+         "parsed_data_plots/reno_reno/reno_reno_${aqm}_transformed.dat" using 12:xtic(1) title "RENO" with linespoints lw 5 pt 5,\
+         "parsed_data_plots/htcp_htcp/htcp_htcp_${aqm}_transformed.dat" using 12:xtic(1) title "HTCP" with linespoints lw 5 pt 7,\
+         "parsed_data_plots/cubic_cubic/cubic_cubic_${aqm}_transformed.dat" using 12:xtic(1) title "CUBIC" with linespoints lw 5 pt 9
 EOC
 
 done
