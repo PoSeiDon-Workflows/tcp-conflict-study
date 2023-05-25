@@ -273,6 +273,40 @@ gnuplot<<EOC
          "parsed_data_plots/cubic_cubic/cubic_cubic_${aqm}_transformed.dat" using (\$7+\$8):xtic(1) title "CUBIC" with linespoints lw 5 pt 9
 EOC
 
+filename="parsed_data_plots/throughput_2bdp_16bdp_${aqm}_lines_normalized.pdf"
+echo $filename
+gnuplot<<EOC
+    reset
+    set terminal pdf size 10,12 font "Calibri, 26"
+    set output "$filename"
+    set datafile separator ","
+
+    set multiplot layout 2,1 columns
+    
+    set notitle
+    
+    set ylabel "2BDP - Normalized Throughput"
+    #set logscale y
+    unset xlabel
+    set key above vertical maxrows 1 right font "Calibri, 22"
+    
+    plot "parsed_data_plots/bbr_bbr/bbr_bbr_${aqm}_transformed.dat" using ((\$2+\$3)/100):xtic(1) title "BBRv1" with linespoints lw 5 pt 1,\
+         "parsed_data_plots/bbr2_bbr2/bbr2_bbr2_${aqm}_transformed.dat" using ((\$2+\$3)/500):xtic(1) title "BBRv2" with linespoints lw 5 pt 3,\
+         "parsed_data_plots/reno_reno/reno_reno_${aqm}_transformed.dat" using ((\$2+\$3)/1000):xtic(1) title "RENO" with linespoints lw 5 pt 5,\
+         "parsed_data_plots/htcp_htcp/htcp_htcp_${aqm}_transformed.dat" using ((\$2+\$3)/10000):xtic(1) title "HTCP" with linespoints lw 5 pt 7,\
+         "parsed_data_plots/cubic_cubic/cubic_cubic_${aqm}_transformed.dat" using ((\$2+\$3)/25000):xtic(1) title "CUBIC" with linespoints lw 5 pt 9
+
+    set ylabel "16BDP - Normalized Throughput"
+    set xlabel "Bandwidth"
+    unset key
+    
+    plot "parsed_data_plots/bbr_bbr/bbr_bbr_${aqm}_transformed.dat" using ((\$7+\$8)/100):xtic(1) title "BBRv1" with linespoints lw 5 pt 1,\
+         "parsed_data_plots/bbr2_bbr2/bbr2_bbr2_${aqm}_transformed.dat" using ((\$7+\$8)/500):xtic(1) title "BBRv2" with linespoints lw 5 pt 3,\
+         "parsed_data_plots/reno_reno/reno_reno_${aqm}_transformed.dat" using ((\$7+\$8)/1000):xtic(1) title "RENO" with linespoints lw 5 pt 5,\
+         "parsed_data_plots/htcp_htcp/htcp_htcp_${aqm}_transformed.dat" using ((\$7+\$8)/10000):xtic(1) title "HTCP" with linespoints lw 5 pt 7,\
+         "parsed_data_plots/cubic_cubic/cubic_cubic_${aqm}_transformed.dat" using ((\$7+\$8)/25000):xtic(1) title "CUBIC" with linespoints lw 5 pt 9
+EOC
+
 filename="parsed_data_plots/retx_2bdp_16bdp_${aqm}_lines.pdf"
 echo $filename
 gnuplot<<EOC
