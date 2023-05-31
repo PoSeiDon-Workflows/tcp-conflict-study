@@ -351,7 +351,7 @@ filename="parsed_data_plots/fairness_2bdp_16bdp_homogeneous_${aqm}_lines.pdf"
 echo $filename
 gnuplot<<EOC
     reset
-    set terminal pdf size 10,12 font "Calibri, 26"
+    set terminal pdf size 10,12 font "Calibri-Bold, 32"
     set output "$filename"
     set datafile separator ","
 
@@ -362,7 +362,7 @@ gnuplot<<EOC
     set ylabel "2BDP - Fairness Index"
     set yrange [0:]
     unset xlabel
-    set key above vertical maxrows 1 right font "Calibri, 22"
+    set key above vertical maxrows 1 right font "Calibri, 24"
     
     plot "parsed_data_plots/bbr_bbr/bbr_bbr_${aqm}_transformed.dat" using 7:xtic(1) title "BBRv1" with linespoints lw 5 pt 1,\
          "parsed_data_plots/bbr2_bbr2/bbr2_bbr2_${aqm}_transformed.dat" using 7:xtic(1) title "BBRv2" with linespoints lw 5 pt 3,\
@@ -431,7 +431,7 @@ filename="parsed_data_plots/fairness_2bdp_16bdp_${aqm}_lines.pdf"
 echo $filename
 gnuplot<<EOC
     reset
-    set terminal pdf size 10,12 font "Calibri, 26"
+    set terminal pdf size 10,12 font "Calibri-Bold, 32"
     set output "$filename"
     set datafile separator ","
 
@@ -442,7 +442,7 @@ gnuplot<<EOC
     set ylabel "2BDP - Fairness Index vs CUBIC"
     set yrange [0:]
     unset xlabel
-    set key above vertical maxrows 1 right font "Calibri, 22"
+    set key above vertical maxrows 1 right font "Calibri, 24"
     
     plot "parsed_data_plots/bbr_cubic/bbr_cubic_${aqm}_transformed.dat" using 7:xtic(1) title "BBRv1" with linespoints lw 5 pt 1,\
          "parsed_data_plots/bbr2_cubic/bbr2_cubic_${aqm}_transformed.dat" using 7:xtic(1) title "BBRv2" with linespoints lw 5 pt 3,\
