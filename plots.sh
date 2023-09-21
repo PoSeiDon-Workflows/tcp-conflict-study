@@ -325,8 +325,10 @@ gnuplot<<EOC
     
     set notitle
     
+    #set ylabel "2BDP - reTX Packets"
     set ylabel "2BDP - reTX Packets (log)"
     set logscale y
+    set yrange [0.0001:100000000]
     unset xlabel
     set key above vertical maxrows 1 right font "Calibri, 22"
     
@@ -336,7 +338,9 @@ gnuplot<<EOC
          "parsed_data_plots/htcp_htcp/htcp_htcp_${aqm}_transformed.dat" using (\$5+\$6):xtic(1) title "HTCP" with linespoints lw 5 pt 7,\
          "parsed_data_plots/cubic_cubic/cubic_cubic_${aqm}_transformed.dat" using (\$5+\$6):xtic(1) title "CUBIC" with linespoints lw 5 pt 9
 
-    set ylabel "16BDP - reTX Packets (log)"
+
+    set ylabel "16BDP - reTX Packets"
+    #set ylabel "16BDP - reTX Packets (log)"
     set xlabel "Bandwidth"
     unset key
     
