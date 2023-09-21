@@ -339,8 +339,8 @@ gnuplot<<EOC
          "parsed_data_plots/cubic_cubic/cubic_cubic_${aqm}_transformed.dat" using (\$5+\$6):xtic(1) title "CUBIC" with linespoints lw 5 pt 9
 
 
-    set ylabel "16BDP - reTX Packets"
-    #set ylabel "16BDP - reTX Packets (log)"
+    #set ylabel "16BDP - reTX Packets"
+    set ylabel "16BDP - reTX Packets (log)"
     set xlabel "Bandwidth"
     unset key
     
